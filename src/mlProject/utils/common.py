@@ -51,13 +51,13 @@ def load_json(path: Path):
     logger.info(f"json file has been loaded successfully from {path}")
     return content
 
-@ensure_annotations
-def save_bin(path: Path, data:Any):
+# @ensure_annotations
+def save_bin(path, data):
     joblib.dump(value=data, filename=path)
     logger.infok(f'filename has been saved at {path}')
 
-@ensure_annotations
-def load_bin(path: Path) -> Any:
+# @ensure_annotations
+def load_bin(path):
     data = joblib.load(path)
     logger.info(f"Binary file loaded from {path}")
     return data
@@ -108,6 +108,23 @@ def evaluate_models(x_train, x_test, y_train, y_test, models: ConfigBox, params)
     except Exception as e:
         raise e
 
+
+def save_object(file_path, obj):
+    try:
+        dir_path = os.path.dirname(file_path)
+        os.makedirs(dir_path, exist_ok=True)
+
+        with open(file_path, 'wb') as file_obj:
+            joblib.dump(obj, file_obj)
+
+    except Exception as e:
+        raise e
+def load_object(file_path):
+    try:
+        with open(file_path, 'rb') as file_obj:
+            return joblib.load(file_obj)
+    except Exception as e:
+        raise e
 
 
 
