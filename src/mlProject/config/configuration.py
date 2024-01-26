@@ -57,7 +57,10 @@ class ConfigurationManager:
 
         data_transformation_config = DataTransformationConfig(
             root_dir=config.root_dir,
-            data_path=config.data_path
+            data_path=config.data_path,
+            preprocessor_path=config.preprocessor_path,
+            test_array_path = config.test_array_path,
+            train_array_path=config.train_array_path
         )
 
         return data_transformation_config
@@ -69,7 +72,7 @@ class ConfigurationManager:
         schema = self.schema.TARGET_COLUMN
         model = self.params.models
         model_p = self.model_p.params
-
+        # print(config)
         create_directories([config.root_dir])
 
         model_trainer_config = ModelTrainerConfig(
@@ -81,12 +84,11 @@ class ConfigurationManager:
             # l1_ration=params.l1_ratio,
             target_column=schema.name,
             model_to_loop = model,
-            model_params = model_p
-        )
+            model_params = model_p,
+            train_array_path=config.train_array_path,
+            test_array_path=config.test_array_path)
 
         return model_trainer_config
-
-    
     
     
     def get_model_evaluation_config(self) -> ModelEvaluationConfig:
@@ -98,7 +100,7 @@ class ConfigurationManager:
 
         model_evaluation_config = ModelEvaluationConfig(
             root_dir=config.root_dir,
-            test_data_path=config.test_data_path,
+            test_array_path=config.test_array_path,
             model_path=config.model_path,
             metric_file_name=config.metric_file_name,
             target_column=schema.name,

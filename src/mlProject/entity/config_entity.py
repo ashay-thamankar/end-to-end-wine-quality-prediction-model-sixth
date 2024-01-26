@@ -19,6 +19,9 @@ class DataValidationConfig:
 class DataTransformationConfig:
     root_dir: Path
     data_path: Path
+    preprocessor_path: Path
+    test_array_path: Path
+    train_array_path: Path
 
 @dataclass(frozen=True)
 class ModelTrainerConfig:
@@ -31,11 +34,13 @@ class ModelTrainerConfig:
     target_column: str
     model_to_loop: str
     model_params: str
+    test_array_path: Path
+    train_array_path: Path
 
 @dataclass(frozen=True)
 class ModelEvaluationConfig:
     root_dir: Path
-    test_data_path: Path
+    test_array_path: Path
     model_path: Path
     all_params: dict
     metric_file_name: Path

@@ -5,6 +5,7 @@ import joblib
 from mlProject.utils.common import save_json
 from mlProject.config.configuration import ModelEvaluationConfig
 from pathlib import Path
+from mlProject.utils.common import load_object
 
 class ModelEvaluation:
     def __init__(self, config:ModelEvaluationConfig):
@@ -18,11 +19,11 @@ class ModelEvaluation:
         return (rmse, mae, r2)
     
     def evaluate_model(self):
-        test_data = pd.read_csv(self.config.test_data_path)
+        test_data = load_object(Path((self.config.test_array_path)))
         model = joblib.load(self.config.model_path)
 
-        test_x = test_data.drop([self.config.target_column], axis=1)
-        test_y = test_data[[self.config.target_column]]
+        test_x = test_data[:,:-1]
+        test_y = test_data[:,-1]
 
         predicted = model.predict(test_x)
 
