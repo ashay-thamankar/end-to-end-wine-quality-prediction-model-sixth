@@ -4,7 +4,8 @@ from mlProject.entity.config_entity import (DataIngestionConfig,
                                             DataValidationConfig,
                                             DataTransformationConfig,
                                             ModelTrainerConfig,
-                                            ModelEvaluationConfig)
+                                            ModelEvaluationConfig,
+                                            ModelPredictionConfig)
 
 
 class ConfigurationManager:
@@ -86,7 +87,8 @@ class ConfigurationManager:
             model_to_loop = model,
             model_params = model_p,
             train_array_path=config.train_array_path,
-            test_array_path=config.test_array_path)
+            test_array_path=config.test_array_path,
+            best_params = config.best_params)
 
         return model_trainer_config
     
@@ -108,4 +110,16 @@ class ConfigurationManager:
         )
 
         return model_evaluation_config
+    
+    def get_model_prediction_config(self) -> ModelPredictionConfig:
+        config = self.config.model_prediction
+
+        model_prediction_config = ModelPredictionConfig(
+            model_path= config.model_path,
+            preprocessor_path=config.preprocessor_path,
+            params_path=config.params_path,
+            train_array_path=config.train_array_path
+
+        )
+        return model_prediction_config
     

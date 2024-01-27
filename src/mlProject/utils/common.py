@@ -86,8 +86,9 @@ def evaluate_models(x_train, x_test, y_train, y_test, models: ConfigBox, params)
             rs.fit(x_train, y_train)
 
             # model.fit(x_train, y_train)
-
-            model.set_params(**rs.best_params_)
+            fitting_params = rs.best_params_
+            print(fitting_params)
+            model.set_params(**fitting_params)
             model.fit(x_train, y_train)
 
             y_test_pred = model.predict(x_test)
@@ -100,9 +101,10 @@ def evaluate_models(x_train, x_test, y_train, y_test, models: ConfigBox, params)
             if test_model_r2_score > temp_score:
                 temp_score = test_model_r2_score
                 temp_model = model
+                best_params = fitting_params
         
 
-        return report, temp_score, temp_model
+        return report, temp_score, temp_model, best_params
 
     except Exception as e:
         raise e
@@ -118,6 +120,7 @@ def save_object(file_path, obj):
 
     except Exception as e:
         raise e
+    
 @ensure_annotations
 def load_object(file_path: Path):
     try:

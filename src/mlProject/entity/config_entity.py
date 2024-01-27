@@ -36,6 +36,7 @@ class ModelTrainerConfig:
     model_params: str
     test_array_path: Path
     train_array_path: Path
+    best_params: Path
 
 @dataclass(frozen=True)
 class ModelEvaluationConfig:
@@ -45,4 +46,11 @@ class ModelEvaluationConfig:
     all_params: dict
     metric_file_name: Path
     target_column: str
+
+@dataclass(frozen=True)
+class ModelPredictionConfig:
+    model_path: Path
+    preprocessor_path: Path
+    params_path: Path
+    train_array_path: Path
     

@@ -38,7 +38,7 @@ class ModelTrainer:
         # print((model_p.values()).keys())
         print(model_p.values())
 
-        model_report , temp_score, temp_model = evaluate_models(x_train=train_x, y_train=train_y, x_test=test_x, y_test=test_y, models=models, params=model_p)
+        model_report , temp_score, temp_model, best_params = evaluate_models(x_train=train_x, y_train=train_y, x_test=test_x, y_test=test_y, models=models, params=model_p)
 
         
         best_model_score = max(sorted(model_report.values()))
@@ -46,7 +46,6 @@ class ModelTrainer:
         best_model_name = list(model_report.keys())[
             list(model_report.values()).index(best_model_score)
             ]
-
         best_model = models[best_model_name]
 
         logging.info(f"Best model is {best_model_name} and its r2 score is {best_model_score}")
@@ -54,5 +53,6 @@ class ModelTrainer:
         # lr = ElasticNet(alpha=self.config.alpha, l1_ratio=self.config.l1_ration, random_state=42)
 
         # lr.fit(train_x, train_y)
-
+        save_object(file_path=Path(self.config.best_params), obj=best_params)
+        # joblib.dump(best_params, os.path.join(self.config.root_dir, self.config.best_params))
         joblib.dump(temp_model, os.path.join(self.config.root_dir, self.config.model_name))

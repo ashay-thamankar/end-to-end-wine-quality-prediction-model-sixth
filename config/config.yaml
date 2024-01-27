@@ -26,11 +26,20 @@ model_trainer:
   model_name: model.joblib
   test_array_path: artifacts/data_transformation/test_array.joblib
   train_array_path: artifacts/data_transformation/train_array.joblib
+  best_params: artifacts/data_transformation/best_params.joblib
 
 model_evaluation:
   root_dir: artifacts/model_evaluation
   test_array_path: artifacts/data_transformation/test_array.joblib
   model_path: artifacts/model_trainer/model.joblib
   metric_file_name: artifacts/model_evaluation/metrics.json
+
+model_prediction:
+  model_path: artifacts/model_trainer/model.joblib
+  preprocessor_path: artifacts/data_transformation/preprocessor.joblib
+  params_path: artifacts/data_transformation/best_params.joblib
+  train_array_path: artifacts/data_transformation/train_array.joblib
+
+
 
   
