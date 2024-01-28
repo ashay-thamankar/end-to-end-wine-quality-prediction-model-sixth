@@ -18,6 +18,13 @@ from sklearn.ensemble import RandomForestRegressor, AdaBoostRegressor, GradientB
 from xgboost import XGBRegressor
 from catboost import CatBoostRegressor
 
+from sklearn.compose import ColumnTransformer
+from sklearn.impute import SimpleImputer
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
+import numpy as np
+from mlProject import *
+
 
 @ensure_annotations
 def read_yaml(path_to_yaml: Path) -> ConfigBox:
@@ -128,6 +135,42 @@ def load_object(file_path: Path):
             return joblib.load(file_obj)
     except Exception as e:
         raise e
+        
+
+def get_data_transformation_object():
+        ''' This function is responsible for data transformation'''
+        try:
+            numerical_columns = ['fixed acidity', 'volatile acidity', 'citric acid', 'residual sugar',
+       'chlorides', 'free sulfur dioxide', 'total sulfur dioxide', 'density',
+       'pH', 'sulphates', 'alcohol']
+            categorical_columns = []
+            num_pipeline = Pipeline(
+                steps=[
+                    ("imputer", SimpleImputer(strategy="median")),
+                    ("scaler", StandardScaler(with_mean=False))
+                ]
+            )
+            cat_pipeline = Pipeline(
+                steps=[
+                    ("imputer", SimpleImputer(strategy="most_frequent")),
+                    ("one_hot_encoder", OneHotEncoder()),
+                    ("scaler", StandardScaler(with_mean=False))
+                ]
+            )
+
+            logging.info(f"Categorical columns : {categorical_columns}")
+            logging.info(f"Numerical columns: {numerical_columns}")
+
+            preprocessor = ColumnTransformer(
+                [
+                    ("num_pipeline", num_pipeline, numerical_columns),
+                    ("cat_pipeline", cat_pipeline, categorical_columns)
+                ]
+            )
+
+            return preprocessor
+        except Exception as e:
+            raise e
 
 
 

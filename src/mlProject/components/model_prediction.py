@@ -1,7 +1,10 @@
 from mlProject.config.configuration import ModelPredictionConfig
 from pathlib import Path
-from mlProject.utils.common import load_object
+from mlProject.utils.common import load_object, get_data_transformation_object
 import pandas as pd
+import numpy as np
+from sklearn.preprocessing import StandardScaler
+from mlProject.components.data_transformation import DataTransformation
 
 class ModelPrediction:
     def __init__(self, config: ModelPredictionConfig):
@@ -33,31 +36,41 @@ class ModelPrediction:
                 "alcohol": alcohol
             }
             print(custom_data_input_dict)
-            return_pd_data = pd.DataFrame([custom_data_input_dict])
-            print(return_pd_data.values)
-            # csv_data = pd.to_csv(return_pd_data)
-            return return_pd_data
+            input_array = np.array(list(custom_data_input_dict.values())).reshape(1, 11)
+            print(input_array)
+            return input_array
         except Exception as e:
             raise e
 
     def predict_data(self, features):
         try:
-            model_path = Path(self.config.model_path)
-            preprocessor_path = Path(self.config.preprocessor_path)
-            best_params_path = Path(self.config.params_path)
-            train_array_path = Path(self.config.train_array_path)
             print("before loading")
-            model = load_object(file_path= model_path)
-            preprocessor = load_object(file_path=preprocessor_path)
-            best_parameters = load_object(file_path=best_params_path)
-            train_array = load_object(file_path= train_array_path)
+            model = load_object(file_path= Path(self.config.model_path))
+            preprocessor = load_object(file_path=Path(self.config.preprocessor_path))
+            best_parameters = load_object(file_path=Path(self.config.params_path))
+            train_array = load_object(file_path= Path(self.config.train_array_path))
+            print(f"Best params {best_parameters}")
+            print(f"Train array : {train_array}, {train_array.shape}")
+            print(f"features : {features}")
+
             train_x, train_y = (train_array[:,:-1], train_array[:,-1])
+            print('after trainx and train_y')   
+            
+            preprocessor_obj = get_data_transformation_object()
+            print('after object creation')
+            print(train_x)
+            # print(np.array(train_x))
+
+            # train_x_array = preprocessor_obj.transform(train_x)
+            print('after fit transfer')
+
             model.set_params(**best_parameters)
             model.fit(train_x, train_y)
+            print('after fit')
             print("After loading")
-            preprocessor.fit(train_x)
-            data_scaled = preprocessor.transform(features)
-            preds = model.predict(data_scaled)
+            # print(features.values())
+            # data_scaled = preprocessor_obj.transform(features)
+            preds = model.predict(features)
             return preds
         except Exception as e:
             raise e

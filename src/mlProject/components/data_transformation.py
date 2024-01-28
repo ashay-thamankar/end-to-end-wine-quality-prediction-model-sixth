@@ -7,48 +7,15 @@ from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 import numpy as np
-from mlProject.utils.common import save_object, load_object
+from mlProject.utils.common import save_object, load_object, get_data_transformation_object
 from pathlib import Path
+
 
 
 class DataTransformation:
     def __init__(self, config: DataTransformationConfig):
         self.config = config
 
-    def get_data_transformation_object(self):
-        ''' This function is responsible for data transformation'''
-        try:
-            numerical_columns = ['fixed acidity', 'volatile acidity', 'citric acid', 'residual sugar',
-       'chlorides', 'free sulfur dioxide', 'total sulfur dioxide', 'density',
-       'pH', 'sulphates', 'alcohol']
-            categorical_columns = []
-            num_pipeline = Pipeline(
-                steps=[
-                    ("imputer", SimpleImputer(strategy="median")),
-                    ("scaler", StandardScaler(with_mean=False))
-                ]
-            )
-            cat_pipeline = Pipeline(
-                steps=[
-                    ("imputer", SimpleImputer(strategy="most_frequent")),
-                    ("one_hot_encoder", OneHotEncoder()),
-                    ("scaler", StandardScaler(with_mean=False))
-                ]
-            )
-
-            logging.info(f"Categorical columns : {categorical_columns}")
-            logging.info(f"Numerical columns: {numerical_columns}")
-
-            preprocessor = ColumnTransformer(
-                [
-                    ("num_pipeline", num_pipeline, numerical_columns),
-                    ("cat_pipeline", cat_pipeline, categorical_columns)
-                ]
-            )
-
-            return preprocessor
-        except Exception as e:
-            raise e
         
     def initiate_data_transformation(self):
         try:
@@ -63,7 +30,7 @@ class DataTransformation:
             logging.info("Read Train and Test data completed")
 
             logging.info("Obtaining preprocessing object")
-            preprocessor_obj = self.get_data_transformation_object()
+            preprocessor_obj = get_data_transformation_object()
 
             save_object(file_path=self.config.preprocessor_path, obj=preprocessor_obj)
             logger.info(f'preprocessor object has saved at {self.config.preprocessor_path}')
